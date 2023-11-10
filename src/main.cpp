@@ -191,17 +191,19 @@ int main(int argc, char *argv[])
       } else if (args.at(1).startsWith("modl://")) {
           QUrl url(args.at(1));
           QUrlQuery query(url.query());
-          if (storage.get() != nullptr) {
+
+          if (url.host() == "other") {
+              handleLink(QDir(qApp->applicationDirPath()).filePath("ModOrganizer.exe"), "download", QUrl::fromPercentEncoding(query.queryItemValue("url").toUtf8()));
+              return 0;
+          } else if (storage.get() != nullptr) {
               QStringList handlerVals = storage->getHandler(url.host());
               QString executable = handlerVals.front();
-              if (url.host() == "other") {
-                  executable = QDir(qApp->applicationDirPath()).filePath("ModOrganizer.exe");
-              }
               if (!executable.isEmpty()) {
                   handleLink(executable, "download", QUrl::fromPercentEncoding(query.queryItemValue("url").toUtf8()));
                   return 0;
               }
           }
+
           QMessageBox::warning(nullptr, QObject::tr("No handler found"),
               QObject::tr("No application registered to handle this game (%1).\n"
                   "If you expected Mod Organizer to handle the link, "
