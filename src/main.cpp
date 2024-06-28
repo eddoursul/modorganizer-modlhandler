@@ -192,10 +192,7 @@ int main(int argc, char *argv[])
           QUrl url(args.at(1));
           QUrlQuery query(url.query());
 
-          if (url.host() == "other") {
-              handleLink(QDir(qApp->applicationDirPath()).filePath("ModOrganizer.exe"), "download", QUrl::fromPercentEncoding(query.queryItemValue("url").toUtf8()));
-              return 0;
-          } else if (storage.get() != nullptr) {
+          if (storage.get() != nullptr) {
               QStringList handlerVals = storage->getHandler(url.host());
               QString executable = handlerVals.front();
               if (!executable.isEmpty()) {
@@ -204,11 +201,8 @@ int main(int argc, char *argv[])
               }
           }
 
-          QMessageBox::warning(nullptr, QObject::tr("No handler found"),
-              QObject::tr("No application registered to handle this game (%1).\n"
-                  "If you expected Mod Organizer to handle the link, "
-                  "you have to go to Settings->Nexus and click the \"Associate with ... links\"-button.").arg(url.host()));
-          return 1;
+          handleLink(QDir(qApp->applicationDirPath()).filePath("ModOrganizer.exe"), "download", QUrl::fromPercentEncoding(query.queryItemValue("url").toUtf8()));
+          return 0;
       } else {
         QMessageBox::warning(nullptr, QObject::tr("Invalid Arguments"), QObject::tr("Invalid number of parameters"));
         return 1;
